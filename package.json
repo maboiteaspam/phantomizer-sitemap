@@ -1,0 +1,26 @@
+{
+  "name": "phantomizer-sitemap",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Sitemap generator for phantomizer app",
+  "keywords": "",
+  "bugs": {
+    "url": "http://github.com/maboiteaspam/phantomizer-sitemap/issues",
+    "email": "none@host.com"
+  },
+  "license": "mit",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/maboiteaspam/phantomizer-sitemap.git"
+  },
+  "dependencies": {
+    "grunt": "0.4.x",
+    "phantomizer-libutil": "git://github.com/maboiteaspam/phantomizer-libutil.git",
+    "wrench": "~1.5.6"
+  },
+  "devDependencies": {
+    "docco": "jashkenas/docco",
+    "grunt-docco": "DavidSouther/grunt-docco",
+    "grunt-gh-pages": "~0.9.0"
+  }
+}
