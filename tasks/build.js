@@ -14,14 +14,14 @@ module.exports = function(grunt) {
     grunt.registerMultiTask("phantomizer-sitemap", "Sitemap generator for phantomizer app", function(){
 
         var options = this.options({
-            routing:{},
+            routing:null,
             target_path:"export/",
             file_name:"sitemap.xml",
             base_url:"http://localhost/"
         });
+        var config = grunt.config();
 
-
-        var router = new router_factory(options.routing);
+        var router = new router_factory(options.routing || config.routing);
         router.load(function(){
 
             var sitemap_fn = options.target_path+"/"+options.file_name;
