@@ -44,14 +44,14 @@ module.exports = <span class="hljs-function"><span class="hljs-keyword">function
     grunt.registerMultiTask(<span class="hljs-string">"phantomizer-sitemap"</span>, <span class="hljs-string">"Sitemap generator for phantomizer app"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
 
         <span class="hljs-keyword">var</span> options = <span class="hljs-keyword">this</span>.options({
-            routing:{},
+            routing:<span class="hljs-literal">null</span>,
             target_path:<span class="hljs-string">"export/"</span>,
             file_name:<span class="hljs-string">"sitemap.xml"</span>,
             base_url:<span class="hljs-string">"http://localhost/"</span>
         });
+        <span class="hljs-keyword">var</span> config = grunt.config();
 
-
-        <span class="hljs-keyword">var</span> router = <span class="hljs-keyword">new</span> router_factory(options.routing);
+        <span class="hljs-keyword">var</span> router = <span class="hljs-keyword">new</span> router_factory(options.routing || config.routing);
         router.load(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
 
             <span class="hljs-keyword">var</span> sitemap_fn = options.target_path+<span class="hljs-string">"/"</span>+options.file_name;
