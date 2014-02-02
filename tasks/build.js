@@ -63,8 +63,8 @@ module.exports = function(grunt) {
                 wrench.mkdirSyncRecursive(options.target_path, "0777");
                 fs.writeFileSync(sitemap_fn, output);
             }
+            grunt.log.ok();
         })
-        grunt.log.ok();
     });
 
 
