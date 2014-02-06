@@ -35,7 +35,7 @@ module.exports = function(grunt) {
             var meta_urls = router.collect_meta_urls();
             for( var n in meta_urls ){
                 var meta = meta_urls[n].meta;
-                if( meta.sitemap != false ){
+                if( meta.sitemap != false &&  meta.export != false ){
                     var last_mod = meta.sitemap&&meta.sitemap.last_mod || meta.last_mod || false;
                     var changefreq = meta.sitemap&&meta.sitemap.changefreq || meta.changefreq || false;
                     var priority = meta.sitemap&&meta.sitemap.priority || meta.priority || false;
