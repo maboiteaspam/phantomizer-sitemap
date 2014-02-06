@@ -32,7 +32,21 @@ module.exports = function(grunt) {
       var tab = "\t";
       var base_url = options.base_url.substr(-1)=="/"?options.base_url:options.base_url+"/";
 
-      var meta_urls = router.collect_meta_urls();
+      // fetch urls to build
+      var not_added = [];
+      var meta_urls = router.collect_meta_urls(function(route){
+        if( route.export == false ){
+          not_added.push(route);
+          return false;
+        }
+        if( route.sitemap == false ){
+          not_added.push(route);
+          return false;
+        }
+        return true;
+      });
+      grunt.log.ok("URL to process: "+meta_urls.length+"/"+(meta_urls.length+not_added.length));
+
       for( var n in meta_urls ){
         var meta = meta_urls[n].meta;
         if( meta.sitemap != false &&  meta.export != false ){
