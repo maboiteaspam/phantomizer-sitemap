@@ -8,10 +8,12 @@ module.exports = function(grunt) {
   var ph_libutil  = require("phantomizer-libutil");
   var path        = require("path");
   var fs          = require("fs");
+  var ProgressBar = require("progress");
 
   var router_factory    = ph_libutil.router;
 
-  grunt.registerMultiTask("phantomizer-sitemap", "Sitemap generator for phantomizer app", function(){
+  grunt.registerMultiTask("phantomizer-sitemap",
+    "Generates sitemap for a phantomizer project", function(){
 
     var options = this.options({
       routing:null,
@@ -20,6 +22,8 @@ module.exports = function(grunt) {
       base_url:"http://localhost/"
     });
     var config = grunt.config();
+
+    var done = this.async();
 
     var router = new router_factory(options.routing || config.routing);
     router.load(function(){
@@ -47,6 +51,14 @@ module.exports = function(grunt) {
       });
       grunt.log.ok("URL to process: "+meta_urls.length+"/"+(meta_urls.length+not_added.length));
 
+// initialize a progress bar
+      var bar = new ProgressBar(' done=[:current/:total] elapsed=[:elapseds] sprint=[:percent] eta=[:etas] [:bar]', {
+        complete: '#'
+        , incomplete: '-'
+        , width: 80
+        , total: meta_urls.length
+      });
+
       for( var n in meta_urls ){
         var meta = meta_urls[n].meta;
         if( meta.sitemap != false &&  meta.export != false ){
@@ -67,6 +79,7 @@ module.exports = function(grunt) {
           if( priority !== false )
             output += tab + tab + '<priority>'+priority+'</priority>' + eol;
           output += tab + '</url>' + eol;
+          bar.tick();
         }
       }
 
@@ -78,6 +91,7 @@ module.exports = function(grunt) {
         fs.writeFileSync(sitemap_fn, output);
       }
       grunt.log.ok();
+      done(true);
     })
   });
 
