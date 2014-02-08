@@ -27,75 +27,111 @@
 
 module.exports = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(grunt)</span> {</span>
 
-    <span class="hljs-keyword">var</span> wrench = <span class="hljs-built_in">require</span>(<span class="hljs-string">'wrench'</span>),
-        util = <span class="hljs-built_in">require</span>(<span class="hljs-string">'util'</span>);</pre></div>
+  <span class="hljs-keyword">var</span> wrench = <span class="hljs-built_in">require</span>(<span class="hljs-string">'wrench'</span>),
+    util = <span class="hljs-built_in">require</span>(<span class="hljs-string">'util'</span>);</pre></div>
         
       
         
         <p>-</p>
 
         
-          <div class='highlight'><pre>    <span class="hljs-keyword">var</span> ph_libutil  = <span class="hljs-built_in">require</span>(<span class="hljs-string">"phantomizer-libutil"</span>);
-    <span class="hljs-keyword">var</span> path        = <span class="hljs-built_in">require</span>(<span class="hljs-string">"path"</span>);
-    <span class="hljs-keyword">var</span> fs          = <span class="hljs-built_in">require</span>(<span class="hljs-string">"fs"</span>);
+          <div class='highlight'><pre>  <span class="hljs-keyword">var</span> ph_libutil  = <span class="hljs-built_in">require</span>(<span class="hljs-string">"phantomizer-libutil"</span>);
+  <span class="hljs-keyword">var</span> path        = <span class="hljs-built_in">require</span>(<span class="hljs-string">"path"</span>);
+  <span class="hljs-keyword">var</span> fs          = <span class="hljs-built_in">require</span>(<span class="hljs-string">"fs"</span>);
+  <span class="hljs-keyword">var</span> ProgressBar = <span class="hljs-built_in">require</span>(<span class="hljs-string">"progress"</span>);
 
-    <span class="hljs-keyword">var</span> router_factory    = ph_libutil.router;
+  <span class="hljs-keyword">var</span> router_factory    = ph_libutil.router;
 
-    grunt.registerMultiTask(<span class="hljs-string">"phantomizer-sitemap"</span>, <span class="hljs-string">"Sitemap generator for phantomizer app"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
+  grunt.registerMultiTask(<span class="hljs-string">"phantomizer-sitemap"</span>,
+    <span class="hljs-string">"Generates sitemap for a phantomizer project"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
 
-        <span class="hljs-keyword">var</span> options = <span class="hljs-keyword">this</span>.options({
-            routing:<span class="hljs-literal">null</span>,
-            target_path:<span class="hljs-string">"export/"</span>,
-            file_name:<span class="hljs-string">"sitemap.xml"</span>,
-            base_url:<span class="hljs-string">"http://localhost/"</span>
-        });
-        <span class="hljs-keyword">var</span> config = grunt.config();
-
-        <span class="hljs-keyword">var</span> router = <span class="hljs-keyword">new</span> router_factory(options.routing || config.routing);
-        router.load(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
-
-            <span class="hljs-keyword">var</span> sitemap_fn = options.target_path+<span class="hljs-string">"/"</span>+options.file_name;
-            <span class="hljs-keyword">if</span>( fs.existsSync(sitemap_fn) ) fs.unlinkSync(sitemap_fn)
-
-            <span class="hljs-keyword">var</span> output = <span class="hljs-string">""</span>;
-            <span class="hljs-keyword">var</span> eol = <span class="hljs-string">"\n"</span>;
-            <span class="hljs-keyword">var</span> tab = <span class="hljs-string">"\t"</span>;
-            <span class="hljs-keyword">var</span> base_url = options.base_url.substr(-<span class="hljs-number">1</span>)==<span class="hljs-string">"/"</span>?options.base_url:options.base_url+<span class="hljs-string">"/"</span>;
-
-            <span class="hljs-keyword">var</span> meta_urls = router.collect_meta_urls();
-            <span class="hljs-keyword">for</span>( <span class="hljs-keyword">var</span> n <span class="hljs-keyword">in</span> meta_urls ){
-                <span class="hljs-keyword">var</span> meta = meta_urls[n].meta;
-                <span class="hljs-keyword">if</span>( meta.sitemap != <span class="hljs-literal">false</span> ){
-                    <span class="hljs-keyword">var</span> last_mod = meta.sitemap&amp;&amp;meta.sitemap.last_mod || meta.last_mod || <span class="hljs-literal">false</span>;
-                    <span class="hljs-keyword">var</span> changefreq = meta.sitemap&amp;&amp;meta.sitemap.changefreq || meta.changefreq || <span class="hljs-literal">false</span>;
-                    <span class="hljs-keyword">var</span> priority = meta.sitemap&amp;&amp;meta.sitemap.priority || meta.priority || <span class="hljs-literal">false</span>;
-
-                    <span class="hljs-keyword">var</span> url = meta_urls[n].url;
-                    url = url.substr(<span class="hljs-number">0</span>,<span class="hljs-number">1</span>)==<span class="hljs-string">"/"</span>?url.substr(<span class="hljs-number">1</span>):url;
-                    url = base_url + url;
-
-                    output += tab + <span class="hljs-string">'&lt;url&gt;'</span> + eol;
-                    output += tab + tab + <span class="hljs-string">'&lt;loc&gt;'</span>+ url +<span class="hljs-string">'&lt;/loc&gt;'</span> + eol;
-                    <span class="hljs-keyword">if</span>( last_mod !== <span class="hljs-literal">false</span> )
-                        output += tab + tab + <span class="hljs-string">'&lt;lastmod&gt;'</span>+last_mod+<span class="hljs-string">'&lt;/lastmod&gt;'</span> + eol;
-                    <span class="hljs-keyword">if</span>( changefreq !== <span class="hljs-literal">false</span> )
-                        output += tab + tab + <span class="hljs-string">'&lt;changefreq&gt;'</span>+changefreq+<span class="hljs-string">'&lt;/changefreq&gt;'</span> + eol;
-                    <span class="hljs-keyword">if</span>( priority !== <span class="hljs-literal">false</span> )
-                        output += tab + tab + <span class="hljs-string">'&lt;priority&gt;'</span>+priority+<span class="hljs-string">'&lt;/priority&gt;'</span> + eol;
-                    output += tab + <span class="hljs-string">'&lt;/url&gt;'</span> + eol;
-                }
-            }
-
-            <span class="hljs-keyword">if</span>( output != <span class="hljs-string">""</span> ){
-                output += <span class="hljs-string">"&lt;/urlset&gt;"</span>;
-                output = <span class="hljs-string">'&lt;urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"&gt;'</span> + eol +output;
-                output = <span class="hljs-string">'&lt;?xml version="1.0" encoding="UTF-8"?&gt;'</span> + eol +output;
-                wrench.mkdirSyncRecursive(options.target_path, <span class="hljs-string">"0777"</span>);
-                fs.writeFileSync(sitemap_fn, output);
-            }
-        })
-        grunt.log.ok();
+    <span class="hljs-keyword">var</span> options = <span class="hljs-keyword">this</span>.options({
+      routing:<span class="hljs-literal">null</span>,
+      target_path:<span class="hljs-string">"export/"</span>,
+      file_name:<span class="hljs-string">"sitemap.xml"</span>,
+      base_url:<span class="hljs-string">"http://localhost/"</span>
     });
+    <span class="hljs-keyword">var</span> config = grunt.config();
+
+    <span class="hljs-keyword">var</span> done = <span class="hljs-keyword">this</span>.async();
+
+    <span class="hljs-keyword">var</span> router = <span class="hljs-keyword">new</span> router_factory(options.routing || config.routing);
+    router.load(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
+
+      <span class="hljs-keyword">var</span> sitemap_fn = options.target_path+<span class="hljs-string">"/"</span>+options.file_name;
+      <span class="hljs-keyword">if</span>( fs.existsSync(sitemap_fn) ) fs.unlinkSync(sitemap_fn)
+
+      <span class="hljs-keyword">var</span> output = <span class="hljs-string">""</span>;
+      <span class="hljs-keyword">var</span> eol = <span class="hljs-string">"\n"</span>;
+      <span class="hljs-keyword">var</span> tab = <span class="hljs-string">"\t"</span>;
+      <span class="hljs-keyword">var</span> base_url = options.base_url.substr(-<span class="hljs-number">1</span>)==<span class="hljs-string">"/"</span>?options.base_url:options.base_url+<span class="hljs-string">"/"</span>;</pre></div>
+        
+      
+        
+        <p>fetch urls to build</p>
+
+        
+          <div class='highlight'><pre>      <span class="hljs-keyword">var</span> not_added = [];
+      <span class="hljs-keyword">var</span> meta_urls = router.collect_meta_urls(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(route)</span>{</span>
+        <span class="hljs-keyword">if</span>( route.export == <span class="hljs-literal">false</span> ){
+          not_added.push(route);
+          <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+        }
+        <span class="hljs-keyword">if</span>( route.sitemap == <span class="hljs-literal">false</span> ){
+          not_added.push(route);
+          <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+        }
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+      });
+      grunt.log.ok(<span class="hljs-string">"URL to process: "</span>+meta_urls.length+<span class="hljs-string">"/"</span>+(meta_urls.length+not_added.length));</pre></div>
+        
+      
+        
+        <p>initialize a progress bar</p>
+
+        
+          <div class='highlight'><pre>      <span class="hljs-keyword">var</span> bar = <span class="hljs-keyword">new</span> ProgressBar(<span class="hljs-string">' done=[:current/:total] elapsed=[:elapseds] sprint=[:percent] eta=[:etas] [:bar]'</span>, {
+        complete: <span class="hljs-string">'#'</span>
+        , incomplete: <span class="hljs-string">'-'</span>
+        , width: <span class="hljs-number">80</span>
+        , total: meta_urls.length
+      });
+
+      <span class="hljs-keyword">for</span>( <span class="hljs-keyword">var</span> n <span class="hljs-keyword">in</span> meta_urls ){
+        <span class="hljs-keyword">var</span> meta = meta_urls[n].meta;
+        <span class="hljs-keyword">if</span>( meta.sitemap != <span class="hljs-literal">false</span> &amp;&amp;  meta.export != <span class="hljs-literal">false</span> ){
+          <span class="hljs-keyword">var</span> last_mod = meta.sitemap&amp;&amp;meta.sitemap.last_mod || meta.last_mod || <span class="hljs-literal">false</span>;
+          <span class="hljs-keyword">var</span> changefreq = meta.sitemap&amp;&amp;meta.sitemap.changefreq || meta.changefreq || <span class="hljs-literal">false</span>;
+          <span class="hljs-keyword">var</span> priority = meta.sitemap&amp;&amp;meta.sitemap.priority || meta.priority || <span class="hljs-literal">false</span>;
+
+          <span class="hljs-keyword">var</span> url = meta_urls[n].url;
+          url = url.substr(<span class="hljs-number">0</span>,<span class="hljs-number">1</span>)==<span class="hljs-string">"/"</span>?url.substr(<span class="hljs-number">1</span>):url;
+          url = base_url + url;
+
+          output += tab + <span class="hljs-string">'&lt;url&gt;'</span> + eol;
+          output += tab + tab + <span class="hljs-string">'&lt;loc&gt;'</span>+ url +<span class="hljs-string">'&lt;/loc&gt;'</span> + eol;
+          <span class="hljs-keyword">if</span>( last_mod !== <span class="hljs-literal">false</span> )
+            output += tab + tab + <span class="hljs-string">'&lt;lastmod&gt;'</span>+last_mod+<span class="hljs-string">'&lt;/lastmod&gt;'</span> + eol;
+          <span class="hljs-keyword">if</span>( changefreq !== <span class="hljs-literal">false</span> )
+            output += tab + tab + <span class="hljs-string">'&lt;changefreq&gt;'</span>+changefreq+<span class="hljs-string">'&lt;/changefreq&gt;'</span> + eol;
+          <span class="hljs-keyword">if</span>( priority !== <span class="hljs-literal">false</span> )
+            output += tab + tab + <span class="hljs-string">'&lt;priority&gt;'</span>+priority+<span class="hljs-string">'&lt;/priority&gt;'</span> + eol;
+          output += tab + <span class="hljs-string">'&lt;/url&gt;'</span> + eol;
+          bar.tick();
+        }
+      }
+
+      <span class="hljs-keyword">if</span>( output != <span class="hljs-string">""</span> ){
+        output += <span class="hljs-string">"&lt;/urlset&gt;"</span>;
+        output = <span class="hljs-string">'&lt;urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"&gt;'</span> + eol +output;
+        output = <span class="hljs-string">'&lt;?xml version="1.0" encoding="UTF-8"?&gt;'</span> + eol +output;
+        wrench.mkdirSyncRecursive(options.target_path, <span class="hljs-string">"0777"</span>);
+        fs.writeFileSync(sitemap_fn, output);
+      }
+      grunt.log.ok();
+      done(<span class="hljs-literal">true</span>);
+    })
+  });
 
 
 };</pre></div>
