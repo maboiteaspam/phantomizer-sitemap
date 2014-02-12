@@ -19,7 +19,7 @@ module.exports = function(grunt) {
       routing:null,
       target_path:"export/",
       file_name:"sitemap.xml",
-      base_url:"http://localhost/"
+      base_location:"http://localhost/"
     });
     var config = grunt.config();
 
@@ -34,7 +34,11 @@ module.exports = function(grunt) {
       var output = "";
       var eol = "\n";
       var tab = "\t";
-      var base_url = options.base_url.substr(-1)=="/"?options.base_url:options.base_url+"/";
+      var base_location = options.base_location.substr(-1)=="/"?options.base_location:options.base_location+"/";
+      if( ! base_location.match(/^https?:\/\//) &&
+        ! base_location.match(/^:\/\//) ){
+        base_location = "http://"+base_location;
+      }
 
       // fetch urls to build
       var not_added = [];
@@ -68,7 +72,7 @@ module.exports = function(grunt) {
 
           var url = meta_urls[n].url;
           url = url.substr(0,1)=="/"?url.substr(1):url;
-          url = base_url + url;
+          url = base_location + url;
 
           output += tab + '<url>' + eol;
           output += tab + tab + '<loc>'+ url +'</loc>' + eol;
