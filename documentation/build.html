@@ -49,7 +49,7 @@ module.exports = <span class="hljs-function"><span class="hljs-keyword">function
       routing:<span class="hljs-literal">null</span>,
       target_path:<span class="hljs-string">"export/"</span>,
       file_name:<span class="hljs-string">"sitemap.xml"</span>,
-      base_url:<span class="hljs-string">"http://localhost/"</span>
+      base_location:<span class="hljs-string">"http://localhost/"</span>
     });
     <span class="hljs-keyword">var</span> config = grunt.config();
 
@@ -64,7 +64,11 @@ module.exports = <span class="hljs-function"><span class="hljs-keyword">function
       <span class="hljs-keyword">var</span> output = <span class="hljs-string">""</span>;
       <span class="hljs-keyword">var</span> eol = <span class="hljs-string">"\n"</span>;
       <span class="hljs-keyword">var</span> tab = <span class="hljs-string">"\t"</span>;
-      <span class="hljs-keyword">var</span> base_url = options.base_url.substr(-<span class="hljs-number">1</span>)==<span class="hljs-string">"/"</span>?options.base_url:options.base_url+<span class="hljs-string">"/"</span>;</pre></div>
+      <span class="hljs-keyword">var</span> base_location = options.base_location.substr(-<span class="hljs-number">1</span>)==<span class="hljs-string">"/"</span>?options.base_location:options.base_location+<span class="hljs-string">"/"</span>;
+      <span class="hljs-keyword">if</span>( ! base_location.match(<span class="hljs-regexp">/^https?:\/\//</span>) &amp;&amp;
+        ! base_location.match(<span class="hljs-regexp">/^:\/\//</span>) ){
+        base_location = <span class="hljs-string">"http://"</span>+base_location;
+      }</pre></div>
         
       
         
@@ -106,7 +110,7 @@ module.exports = <span class="hljs-function"><span class="hljs-keyword">function
 
           <span class="hljs-keyword">var</span> url = meta_urls[n].url;
           url = url.substr(<span class="hljs-number">0</span>,<span class="hljs-number">1</span>)==<span class="hljs-string">"/"</span>?url.substr(<span class="hljs-number">1</span>):url;
-          url = base_url + url;
+          url = base_location + url;
 
           output += tab + <span class="hljs-string">'&lt;url&gt;'</span> + eol;
           output += tab + tab + <span class="hljs-string">'&lt;loc&gt;'</span>+ url +<span class="hljs-string">'&lt;/loc&gt;'</span> + eol;
