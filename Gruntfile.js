@@ -48,6 +48,5 @@ module.exports = function(grunt) {
     wrench.rmdirSyncRecursive(__dirname + '/documentation', !true);
   });
   grunt.registerTask('default', ['docco','gh-pages', 'cleanup-grunt-temp']);
-  grunt.registerTask('sitemap', ['phantomizer-sitemap']);
 
 };
