@@ -10,22 +10,20 @@ module.exports = function(grunt) {
   var fs          = require("fs");
   var ProgressBar = require("progress");
 
-  var router_factory    = ph_libutil.router;
-
   grunt.registerMultiTask("phantomizer-sitemap",
     "Generates sitemap for a phantomizer project", function(){
 
     var options = this.options({
-      routing:null,
       target_path:"export/",
       file_name:"sitemap.xml",
       base_location:"http://localhost/"
     });
-    var config = grunt.config();
 
     var done = this.async();
 
-    var router = new router_factory(options.routing || config.routing);
+    // get phantomizer main instance
+    var phantomizer = ph_libutil.get("main");
+    var router = phantomizer.get_router();
     router.load(function(){
 
       var sitemap_fn = options.target_path+"/"+options.file_name;
