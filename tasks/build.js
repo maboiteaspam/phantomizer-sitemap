@@ -22,7 +22,8 @@ module.exports = function(grunt) {
       var done = this.async();
 
       // get phantomizer main instance
-      var phantomizer = ph_libutil.get("main");
+      var Phantomizer = ph_libutil.Phantomizer;
+      var phantomizer = new Phantomizer(process.cwd(),grunt);
       var router = phantomizer.get_router();
       router.load(function(){
 
