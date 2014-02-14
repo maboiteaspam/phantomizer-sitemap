@@ -1,6 +1,5 @@
 module.exports = function(grunt) {
 
-
   var wrench = require('wrench'),
     util = require('util');
 
@@ -27,41 +26,14 @@ module.exports = function(grunt) {
     },
     release: {
       options: {
-        bump: true,
-        add: false,
-        commit: false,
-        npm: false,
-        npmtag: true,
-        tagName: '<%= version %>',
+        npm: false, //default: true
+        // true will apply the version number as the tag
+        npmtag: true, //default: no tag
+        tagName: '<%= version %>', //default: '<%= version %>'
         github: {
           repo: 'maboiteaspam/phantomizer-sitemap',
           usernameVar: 'GITHUB_USERNAME',
           passwordVar: 'GITHUB_PASSWORD'
-        }
-      }
-    },
-    'phantomizer-sitemap': {
-      options: {
-      },
-      "test":{
-        "options":{
-          routing:[
-            {
-              "template":"/category.htm",
-              "test_url":"/some/category.htm",
-              "tests":[
-                "tests/module-name"
-              ],
-              "urls_file":"data/collection-of-urls.json"
-            },
-            {
-              "template":"/templated-page.htm",
-              "tests":[
-                "tests/module-name"
-              ],
-              sitemap:false
-            }
-          ]
         }
       }
     }
